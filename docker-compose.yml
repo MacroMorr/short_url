@@ -1,45 +1,45 @@
 # Set the following environment variables before running `docker-compose up -d` command
 #
-# CACHE_TEST_MYSQL_USER=cache-test
-# CACHE_TEST_MYSQL_PASSWORD=cache-test-password
-# CACHE_TEST_MYSQL_ROOT_PASSWORD=root-password
-# CACHE_TEST_MYSQL_DATABASE=cache-test
-# CACHE_TEST_MYSQL_HOST_PORT=33060
-# CACHE_TEST_NETWORK_SUBNET=192.168.222
+# SHORT_URL_MYSQL_USER=short-url
+# SHORT_URL_MYSQL_PASSWORD=short-url-password
+# SHORT_URL_MYSQL_ROOT_PASSWORD=root-password
+# SHORT_URL_MYSQL_DATABASE=short-url
+# SHORT_URL_MYSQL_HOST_PORT=33060
+# SHORT_URL_NETWORK_SUBNET=192.168.222
 
 version: '3.6'
 
 networks:
-    cache-test-network:
-        name: cache-test-network
+    short-url-network:
+        name: short-url-network
         driver: bridge
         ipam:
             driver: default
             config:
-                -   subnet: "${CACHE_TEST_NETWORK_SUBNET:-192.168.222}.0/28"
+                -   subnet: "${SHORT_URL_NETWORK_SUBNET:-192.168.222}.0/28"
 
 volumes:
-    cache-test-mysql-data:
-        name: cache-test-mysql-data
+    short-url-mysql-data:
+        name: short-url-mysql-data
         driver: local
 
 services:
-    cache-test-mysql:
+    short-url-mysql:
         build:
             args:
-                APPLICATION_PATH: /var/www/cache-test
-                MYSQL_USER: ${CACHE_TEST_MYSQL_USER:-cache-test}
-                MYSQL_PASSWORD: ${CACHE_TEST_MYSQL_PASSWORD:-cache-test-password}
-                MYSQL_ROOT_PASSWORD: ${CACHE_TEST_MYSQL_ROOT_PASSWORD:-root-password}
-                MYSQL_DATABASE: ${CACHE_TEST_MYSQL_DATABASE:-cache-test}
+                APPLICATION_PATH: /var/www/short-url
+                MYSQL_USER: ${SHORT_URL_MYSQL_USER:-short-url}
+                MYSQL_PASSWORD: ${SHORT_URL_MYSQL_PASSWORD:-short-url-password}
+                MYSQL_ROOT_PASSWORD: ${SHORT_URL_MYSQL_ROOT_PASSWORD:-root-password}
+                MYSQL_DATABASE: ${SHORT_URL_MYSQL_DATABASE:-short-url}
             context: ./
             dockerfile: build/mysql/Dockerfile
-        container_name: cache-test-mysql
+        container_name: short-url-mysql
         networks:
-            cache-test-network:
-                ipv4_address: "${CACHE_TEST_NETWORK_SUBNET:-192.168.222}.2"
+            short-url-network:
+                ipv4_address: "${SHORT_URL_NETWORK_SUBNET:-192.168.222}.2"
         ports:
-            - "${CACHE_TEST_MYSQL_HOST_PORT:-33060}:3306"
+            - "${SHORT_URL_MYSQL_HOST_PORT:-33060}:3306"
         restart: "no"
         tty: true
 #        healthcheck:
@@ -47,36 +47,36 @@ services:
 #            timeout: 30s
 #            retries: 10
         volumes:
-            - ./:/var/www/cache-test/
-            - cache-test-mysql-data:/var/lib/mysql/
+            - ./:/var/www/short-url/
+            - short-url-mysql-data:/var/lib/mysql/
             - ./var/log/mysql/:/var/log/mysql/
 
-    cache-test-php-fpm:
+    short-url-php-fpm:
         build:
             args:
                 APP_ENV: devlocal
-                APPLICATION_PATH: /var/www/cache-test
-                MYSQL_USER: ${CACHE_TEST_MYSQL_USER:-cache-test}
-                MYSQL_PASSWORD: ${CACHE_TEST_MYSQL_PASSWORD:-cache-test-password}
-                MYSQL_ROOT_PASSWORD: ${CACHE_TEST_MYSQL_ROOT_PASSWORD:-root-password}
-                MYSQL_DATABASE: ${CACHE_TEST_MYSQL_DATABASE:-cache-test}
-                NETWORK_SUBNET: ${CACHE_TEST_NETWORK_SUBNET:-192.168.222}
+                APPLICATION_PATH: /var/www/short-url
+                MYSQL_USER: ${SHORT_URL_MYSQL_USER:-short-url}
+                MYSQL_PASSWORD: ${SHORT_URL_MYSQL_PASSWORD:-short-url-password}
+                MYSQL_ROOT_PASSWORD: ${SHORT_URL_MYSQL_ROOT_PASSWORD:-root-password}
+                MYSQL_DATABASE: ${SHORT_URL_MYSQL_DATABASE:-short-url}
+                NETWORK_SUBNET: ${SHORT_URL_NETWORK_SUBNET:-192.168.222}
             context: ./
             dockerfile: build/php-fpm/Dockerfile
-        container_name: cache-test-php-fpm
+        container_name: short-url-php-fpm
         links:
-            - cache-test-mysql
+            - short-url-mysql
         depends_on:
-            - cache-test-mysql
+            - short-url-mysql
         ports:
             - "9000:9000"
         expose:
             - 9000
         networks:
-            cache-test-network:
-                ipv4_address: "${CACHE_TEST_NETWORK_SUBNET:-192.168.222}.3"
+            short-url-network:
+                ipv4_address: "${SHORT_URL_NETWORK_SUBNET:-192.168.222}.3"
         restart: always
         tty: true
         volumes:
-            - ./:/var/www/cache-test/
+            - ./:/var/www/short-url/
             - ./var/log/php-fpm/:/var/log/php-fpm/
