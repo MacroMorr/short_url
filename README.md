@@ -16,7 +16,7 @@
 _Так же есть возможность установки env переменных перед сборкой:_
 `SHORT_URL_MYSQL_USER=new-user SHORT_URL_MYSQL_PASSWORD=new-password docker-compose up -d --build`
 
-###Список доступных переменных:
+### Список доступных переменных:
  - SHORT_URL_MYSQL_USER=short-url
  - SHORT_URL_MYSQL_PASSWORD=short-url-password
  - SHORT_URL_MYSQL_ROOT_PASSWORD=root-password
