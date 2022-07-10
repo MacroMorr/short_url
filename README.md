@@ -10,10 +10,5 @@
 ### Установка:
 
 1. `git clone https://github.com/MacroMorr/short_url.git`
-2. `cd cacheTest`
-3. `composer install`
-4. `cp .evn.example .env`
-5. `php artisan key:generate`
-6. Настроить файл `.evn`
-7. `php artisan migrate`
-8. Запустить веб-сервер
+2. `cd short_url`
+3. Run `docker-compose up -d`

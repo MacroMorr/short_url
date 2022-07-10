@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\ShortURL;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -21,7 +20,7 @@ class ShortController extends Controller
         return redirect()->to($url->long_url, 308);
     }
 
-    public static function createShortUrl(Request $request)
+    public static function createShortUrl(Request $request):RedirectResponse
     {
         $request->validate([
             'long_url' => 'required|url|max:65535',
